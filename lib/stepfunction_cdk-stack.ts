@@ -10,6 +10,10 @@ export class StepfunctionCdkStack extends cdk.Stack {
     const stateMachineRole = new Role(this, "StepFunction-cdk-kn", {
       assumedBy: new ServicePrincipal("states.amazonaws.com")
     });
-    stateMachineRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("AWSLambdaRole"));
+
+    const awsLambdaRoleArn = "arn:aws:iam::aws:policy/service-role/AWSLambdaRole";
+
+    const lambdarole = ManagedPolicy.fromManagedPolicyArn(this, "AWSLambdaRole", awsLambdaRoleArn);
+    stateMachineRole.addManagedPolicy(lambdarole);
   }
 }
