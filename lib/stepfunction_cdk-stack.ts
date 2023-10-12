@@ -1,4 +1,5 @@
 import * as cdk from 'aws-cdk-lib';
+import { CfnRule } from 'aws-cdk-lib/aws-events';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { DefinitionBody, StateMachine } from 'aws-cdk-lib/aws-stepfunctions';
 import { Construct } from 'constructs';
@@ -44,6 +45,24 @@ export class StepfunctionCdkStack extends cdk.Stack {
         definitionBody: DefinitionBody.fromFile(jsonPath),
         role: stateMachineRole
       });
+
+      stateMachineArns.push(stateMachine.stateMachineArn);
     });
+
+    const failEventRule: CfnRule = new CfnRule(this, "fail-statemachine-detect", {
+      name: "fail-statemachine-detect",
+      description: "",
+      eventBusName: "default",
+      eventPattern: {
+        "source": ["aws.states"],
+        "detail-type": ["Step Function Status Change"],
+        "detail": {
+          "status": ["FAILED"],
+          "stateMachineArn": stateMachineArns
+        }
+      }
+    }); 
+
+
   }
 }
