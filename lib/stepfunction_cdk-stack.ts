@@ -59,7 +59,8 @@ export class StepfunctionCdkStack extends cdk.Stack {
       topicName: topicName,
     });
 
-    const policy = new PolicyStatement({
+    const policy: PolicyStatement = new PolicyStatement({
+      sid: "Allow EventBridge to publish to this SNS Topic",
       effect: Effect.ALLOW,
       actions: ["sns:Publish"],
       principals: [new ServicePrincipal("events.amazonaws.com")],
