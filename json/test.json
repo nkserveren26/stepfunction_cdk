@@ -6,10 +6,8 @@
             "Type": "Pass",
             "Next": "World"
         },
-        "World": {
-            "Type": "Pass",
-            "Result": "World",
-            "End": true
+        "EndState": {
+            "Type": "Succeed"
         }
     }
 }
