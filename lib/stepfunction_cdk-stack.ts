@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { CfnRule } from 'aws-cdk-lib/aws-events';
-import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Effect, ManagedPolicy, PolicyStatement, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Topic } from 'aws-cdk-lib/aws-sns';
 import { EmailSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { DefinitionBody, StateMachine } from 'aws-cdk-lib/aws-stepfunctions';
@@ -58,6 +58,15 @@ export class StepfunctionCdkStack extends cdk.Stack {
     const topic: Topic = new Topic(this, topicName, {
       topicName: topicName,
     });
+
+    const policy = new PolicyStatement({
+      effect: Effect.ALLOW,
+      actions: ["sns:Publish"],
+      principals: [new ServicePrincipal("events.amazonaws.com")],
+      resources: [topic.topicArn]
+    });
+
+    topic.addToResourcePolicy(policy);
 
     const emailSubscription = new EmailSubscription(email);
     topic.addSubscription(emailSubscription);
