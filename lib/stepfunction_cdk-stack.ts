@@ -68,7 +68,7 @@ export class StepfunctionCdkStack extends cdk.Stack {
       eventBusName: "default",
       eventPattern: {
         "source": ["aws.states"],
-        "detail-type": ["Step Function Status Change"],
+        "detail-type": ["Step Functions Execution Status Change"],
         "detail": {
           "status": ["FAILED"],
           "stateMachineArn": stateMachineArns
