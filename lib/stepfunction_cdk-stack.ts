@@ -1,6 +1,8 @@
 import * as cdk from 'aws-cdk-lib';
 import { CfnRule } from 'aws-cdk-lib/aws-events';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { Topic } from 'aws-cdk-lib/aws-sns';
+import { EmailSubscription } from 'aws-cdk-lib/aws-sns-subscriptions';
 import { DefinitionBody, StateMachine } from 'aws-cdk-lib/aws-stepfunctions';
 import { Construct } from 'constructs';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
@@ -49,6 +51,17 @@ export class StepfunctionCdkStack extends cdk.Stack {
       stateMachineArns.push(stateMachine.stateMachineArn);
     });
 
+    const topicName: string = "notification-failure-statemachine";
+    const email: string = "isliverpool@yahoo.co.jp";
+
+    //ステートマシン失敗通知用SNS
+    const topic: Topic = new Topic(this, topicName, {
+      topicName: topicName,
+    });
+
+    const emailSubscription = new EmailSubscription(email);
+    topic.addSubscription(emailSubscription);
+
     const failEventRule: CfnRule = new CfnRule(this, "fail-statemachine-detect", {
       name: "fail-statemachine-detect",
       description: "",
@@ -60,7 +73,14 @@ export class StepfunctionCdkStack extends cdk.Stack {
           "status": ["FAILED"],
           "stateMachineArn": stateMachineArns
         }
-      }
+      },
+      state: "ENABLED",
+      targets: [
+        {
+          id: "sns-notification",
+          arn: topic.topicArn
+        }
+      ]
     }); 
 
 
