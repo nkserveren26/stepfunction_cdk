@@ -52,7 +52,7 @@ export class StepfunctionCdkStack extends cdk.Stack {
     });
 
     const topicName: string = "notification-failure-statemachine";
-    const email: string = "isliverpool@yahoo.co.jp";
+    const email: string = "";
 
     //ステートマシン失敗通知用SNS
     const topic: Topic = new Topic(this, topicName, {
@@ -88,7 +88,10 @@ export class StepfunctionCdkStack extends cdk.Stack {
       targets: [
         {
           id: "sns-notification",
-          arn: topic.topicArn
+          arn: topic.topicArn,
+          inputTransformer: {
+            inputTemplate: "\"aaaaaaaaaaaaaa\"\n\"bbbbbbbbbb\""
+          }
         }
       ]
     }); 
