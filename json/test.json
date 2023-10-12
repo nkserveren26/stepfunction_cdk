@@ -4,7 +4,7 @@
     "States": {
         "Hello": {
             "Type": "Pass",
-            "Next": "World"
+            "Next": "EndState"
         },
         "EndState": {
             "Type": "Succeed"
