@@ -90,7 +90,10 @@ export class StepfunctionCdkStack extends cdk.Stack {
           id: "sns-notification",
           arn: topic.topicArn,
           inputTransformer: {
-            inputTemplate: "\"aaaaaaaaaaaaaa\"\n\"bbbbbbbbbb\""
+            inputTemplate: "\"aaaaaaaaaaaaaa\"\n\"<resources>\"",
+            inputPathsMap: {
+              "resources": "$.resources[0]"
+            }
           }
         }
       ]
