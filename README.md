@@ -43,3 +43,12 @@ export class StepfunctionCdkStack extends cdk.Stack {
 ```
 
 ### Construct
+Stackの配下に属するコンストラクト。  
+AWSの各リソースに該当し、これらのリソース作成を担う。  
+Stackの配下なので、第一引数（scope）には所属元Stackを指定する。  
+（thisで指定）  
+```sample.ts
+const stateMachineRole = new Role(this, "StepFunction-cdk-kn", {
+    assumedBy: new ServicePrincipal("states.amazonaws.com")
+});
+```
