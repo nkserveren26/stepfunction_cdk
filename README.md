@@ -1,14 +1,45 @@
-# Welcome to your CDK TypeScript project
+## CDKの構成要素
+CDKはコンストラクトと呼ばれる要素で構成されている。  
+コンストラクトには以下3つがあり、これらは階層構成となっている。  
+　App  
+　Stack  
+　Construct  
 
-This is a blank project for CDK development with TypeScript.
+<br>
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+### App
+最上位に位置するコンストラクト。  
+CDKのエントリポイントとなり、cdk deployを実行すると、このコンストラクトが実行される。  
+以下のcdk.Appがこのコンストラクトに該当し、この下に1つあるいは複数のStackコンストラクトが属する形となる。  
+```sample.ts
+#!/usr/bin/env node
+import 'source-map-support/register';
+import * as cdk from 'aws-cdk-lib';
+import { StepfunctionCdkStack } from '../lib/stepfunction_cdk-stack';
 
-## Useful commands
+const app = new cdk.App();
+new StepfunctionCdkStack(app, 'StepfunctionCdkStack', {
+});
+```
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+### Stack
+Appの配下に属するコンストラクト。  
+CloudFormationのスタックと1:1で対応する。  
+StackはAppの配下に属するので、インスタンス化する際はscopeにAppインスタンスを指定する。
+```sample.ts  
+const app = new cdk.App();
+new StepfunctionCdkStack(app, 'StepfunctionCdkStack', {
+});
+```
+
+scopeにはConstructクラスが入ってくるので、クラス定義ではscopeの型にConstructを指定する。  
+```sample.ts
+export class StepfunctionCdkStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+    ...
+  }
+}
+```
+
+### Construct
